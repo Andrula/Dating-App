@@ -25,28 +25,34 @@
 </div>
 
 @code {
-
-	private string inputUser;
-	private string inputPass;
+	string inputUser;
+	string inputPass;
 
 	private void submitMethod()
 	{	
 		SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2B7RBNS\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");  
-			if (con.State == ConnectionState.Closed)
-			{
-				con.Open();
-			}
+		if (con.State == ConnectionState.Closed)
+		{
+			// Opens the SQL connection
+			con.Open();
 
-			SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM account WHERE username='"+ inputUser +"' AND password='"+ inputPass +"'",con);
+			string query = "SELECT COUNT(*) FROM account WHERE username='"+ inputUser +"' AND password='"+ inputPass +"'";
 
-			SqlDataReader dr = cmd.ExecuteReader();
-			if (dr.HasRows)	
+			SqlCommand sqlCmd = new SqlCommand(query, con);
+			sqlCmd.CommandType = System.Data.CommandType.Text;
+			sqlCmd.Parameters.AddWithValue("@Username", inputUser);
+			sqlCmd.Parameters.AddWithValue("@Password", inputPass);
+			int count = Convert.ToInt32(sqlCmd.ExecuteScalar());
+					
+			int login = (int)sqlCmd.ExecuteScalar();
+			if (login == 1)
 			{
 				navigateManager.NavigateTo("homepage");
-			}  
-			else  
-			{ 
+			}
+			else
+			{
 				navigateManager.NavigateTo("error");
 			}
+		}
 	}  
 }
