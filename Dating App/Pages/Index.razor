@@ -36,7 +36,7 @@
 			// Opens the SQL connection
 			con.Open();
 
-			string query = "SELECT COUNT(*) FROM account WHERE username='"+ inputUser +"' AND password='"+ inputPass +"'";
+			string query = "SELECT COUNT(*) FROM account WHERE username=@Username' AND password=@Password";
 
 			SqlCommand sqlCmd = new SqlCommand(query, con);
 			sqlCmd.CommandType = System.Data.CommandType.Text;
