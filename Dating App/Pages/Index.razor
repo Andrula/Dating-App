@@ -1,9 +1,58 @@
 ﻿@page "/"
+@using System.Data.SqlClient
+@using System.Data
+@using System.Data.Sql
+@inject NavigationManager navigateManager
 
-<PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<h3 style="text-align: center; font-size: 25px; font-weight: bold; padding-bottom: 30px">Login</h3>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div class="flex-column" style="display: flex; justify-content: center; align-items: center;">
+
+		<label style="font-size: 20px; padding-bottom: 10px; margin-right: 25%">Username:</label>
+		<p style="padding-bottom: 10px">
+		<input type="text" style="width: 400px" placeholder="Username..." @bind-value="inputUser" />
+		</p>
+
+		<label style="font-size: 20px; padding-bottom: 10px; margin-right: 25%">Password:</label>
+		<p style="padding-bottom: 30px">
+		<input type="password" style="width: 400px" placeholder="Password..." @bind-value="inputPass" />
+		</p>
+
+	<button @onclick="submitMethod">Login</button>
+
+</div>
+
+@code {
+	string inputUser;
+	string inputPass;
+
+	private void submitMethod()
+	{	
+		SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2B7RBNS\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");  
+		if (con.State == ConnectionState.Closed)
+		{
+			// Opens the SQL connection
+			con.Open();
+
+			string query = "SELECT COUNT(*) FROM account WHERE username='"+ inputUser +"' AND password='"+ inputPass +"'";
+
+			SqlCommand sqlCmd = new SqlCommand(query, con);
+			sqlCmd.CommandType = System.Data.CommandType.Text;
+			sqlCmd.Parameters.AddWithValue("@Username", inputUser);
+			sqlCmd.Parameters.AddWithValue("@Password", inputPass);
+			int count = Convert.ToInt32(sqlCmd.ExecuteScalar());
+					
+			int login = (int)sqlCmd.ExecuteScalar();
+			if (login == 1)
+			{
+				navigateManager.NavigateTo("homepage");
+			}
+			else
+			{
+				navigateManager.NavigateTo("error");
+			}
+		}
+	}  
+}
