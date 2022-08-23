@@ -2,6 +2,8 @@
 @using System.Data.SqlClient
 @using System.Data
 @using System.Data.Sql
+@using System.Data.SqlClient
+@using System.Data
 @inject NavigationManager navigateManager
 @layout LoginLayout
 
@@ -15,15 +17,13 @@
               <div class="card-body p-md-5 mx-md-4">
 
                 <div class="text-center">
-                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/lotus.webp"
+                  <img src="https://www.clipartmax.com/png/full/71-718854_kissing-clipart-fish-cartoon-fish-in-love.png"
                     style="width: 185px;" alt="logo">
                   <h4 class="mt-1 mb-5 pb-1">Create a new account</h4>
                 </div>
 
                 <form>
-
                   <div class="form-outline mb-4">
-
                     <input @bind-value="inputEmail" type="email" id="form2Example11" class="form-control"
                       placeholder="E-mail..." />
                   </div>
@@ -35,28 +35,41 @@
                   <div class="form-outline mb-4">
                     <input @bind-value="inputPassword" type="password" id="form2Example11" class="form-control" placeholder="Password" />
                   </div>
+                </form>
+              </div>
+            </div>
 
-                  <div class="form-outline mb-4">
+          
+       
+            <div class="col-lg-6">
+              <div class="card-body p-md-5 mx-md-4">
+                  <div class="text-center">
+                        <h4 class="mt-1 mb-5 pb-1">Account information</h4>
+                  </div>
+                 
+                </div>
+
+                <form>
+                     <div class="form-outline mb-4>">
+                     <input @bind-value="weight" type="text" id="form2Example11" class="form-control" placeholder="weight">
+                </div>
+
+                <div class="form-outline mb-4>">
+                     <input @bind-value="height" type="text" id="form2Example11" class="form-control" placeholder="height"> 
+                </div>
+
+                 <div class="form-outline mb-4">
                      <p>Select your gender:</p>
                     <input @bind-value="inputGender"  type="radio" name="gender"/>
                     <label>Male</label>
                     <input @bind-value="inputGender"  type="radio" name="gender"/>
                     <label>Female</label>
-                  </div>
-
+                 </div>
+                     <button @onclick=createUserMethod class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">Next</button>
                 </form>
-
               </div>
+             
             </div>
-            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
-              <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                <h4 class="mb-4">We are more than just a company</h4>
-                <p class="small mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                  exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -98,6 +111,20 @@
     private string inputEmail { get; set; }
     private string inputUsername { get; set; }
     private string inputPassword { get; set; }
-    private char inputGender { get; set; }
+    char inputGender { get; set; }
+    string weight { get; set; }
+    string height { get; set; }
+    string age { get; set; }
 
+
+    private void createUserMethod()
+    {
+        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2B7RBNS\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");
+        if (con.State == ConnectionState.Closed)
+        {
+            // Opens the SQL connection
+            con.Open();
+        }
+
+    }
 }
