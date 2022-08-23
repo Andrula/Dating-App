@@ -109,8 +109,8 @@
 			con.Open();
 
 			string query = "SELECT COUNT(*) FROM account WHERE username=@Username AND password=@Password";
-
 			SqlCommand sqlCmd = new SqlCommand(query, con);
+
 			sqlCmd.CommandType = System.Data.CommandType.Text;
 			sqlCmd.Parameters.AddWithValue("@Username", inputUser);
 			sqlCmd.Parameters.AddWithValue("@Password", inputPass);
