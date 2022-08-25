@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\NewFile.txt" />
     <None Remove="Shared\NewFile.txt" />
   </ItemGroup>
 

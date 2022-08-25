@@ -2,10 +2,10 @@
 @using System.Data.SqlClient
 @using System.Data
 @using System.Data.Sql
-@using System.Data.SqlClient
 @using System.Data
 @using System.Text.RegularExpressions;
 @using System.Linq;
+@using Dating_App.Data;
 @inject IJSRuntime JsRuntime
 @inject NavigationManager navigateManager
 @layout LoginLayout
@@ -15,7 +15,7 @@
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-xl-10">
-color    <div class="card rounded-3 text-black">
+                <div class="card rounded-3 text-black">
                     <div class="row g-0">
                         <div class="col-lg-6">
                             <div class="card-body p-md-5 mx-md-4">
@@ -28,22 +28,24 @@ color    <div class="card rounded-3 text-black">
 
                                 <form>
                                     <div class="form-outline mb-4">
-                                        <input @bind-value="inputEmail" type="email" id="form2Example11" class="form-control"
+                                        <input @bind-value="account.Email" type="email" id="form2Example11" class="form-control"
                                                placeholder="E-mail..." required />
-                                        
-                                        <span class="validity"></span>
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <input @bind-value="inputUsername" type="text" id="form2Example11" class="form-control" placeholder="Username" required />
+                                        <input @bind-value="account.Username" type="text" id="form2Example11" class="form-control" placeholder="Username..." required />
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <input @bind-value="inputPassword" type="password" id="form2Example11" class="form-control" placeholder="Password" required />
+                                        <input @bind-value="profile.Firstname" type="text" id="form2Example11" class="form-control" placeholder="First name..." required />
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <input @bind-value="inputCity" type="city" id="form2Example11" class="form-control" placeholder="City" required />
+                                        <input @bind-value="account.Password" type="password" id="form2Example11" class="form-control" placeholder="Password..." required />
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <input @bind-value="profile.City" type="city" id="form2Example11" class="form-control" placeholder="City..." required />
                                     </div>
                                 </form>
                             </div>
@@ -61,15 +63,15 @@ color    <div class="card rounded-3 text-black">
 
                                 <form>
                                     <div class="form-outline mb-4 p-md-1>">
-                                        <input @bind-value="inputWeight" type="number" id="form2Example11" class="form-control" placeholder="Weight in kilos" required>
+                                        <input @bind-value="profile.Weight" type="number" id="form2Example11" class="form-control" placeholder="Weight in kilos..." required>
                                     </div>
 
                                     <div class="form-outline mb-4 p-md-1>">
-                                        <input @bind-value="inputHeight" type="number" id="form2Example11" class="form-control" placeholder="Height in centimeters" required>
+                                        <input @bind-value="profile.Height" type="number" id="form2Example11" class="form-control" placeholder="Height in centimeters..." required>
                                     </div>
 
                                     <div class="form-outline mb-4 p-md-1>">
-                                        <input @bind-value="inputAge" type="date" id="form2Example11" class="form-control" max="2004-12-31" required>
+                                        <input @bind-value="profile.Age" type="date" id="form2Example11" class="form-control" max="2004-12-31" required>
                                     </div>
 
                                     <div class="form-outline mb-4">
@@ -78,22 +80,21 @@ color    <div class="card rounded-3 text-black">
                                             <input type="radio"
                                                    value="M"
                                                    name="gender"
-                                                   checked="@(inputGender == 'M')"
-                                                   @onclick="@(()=>inputGender = 'M')" />Male
+                                                   checked="@(profile.Gender == 'M')"
+                                                   @onclick="@(()=>profile.Gender = 'M')" />Male
                                         </label>
                                         <label>
                                             <input type="radio"
                                                    value="F"
                                                    name="gender"
-                                                   checked="@(inputGender == 'F')"
-                                                   @onclick="@(()=>inputGender = 'F')" />Female
+                                                   checked="@(profile.Gender == 'F')"
+                                                   @onclick="@(()=>profile.Gender = 'F')" />Female
                                         </label>
-                                        @inputGender
                                     </div>
 
                                     <button @onclick=createUserMethod class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">Next</button>
-                                    <div style="background-color: red;">
-                                        <p> @errorMessage</p>
+                                    <div style="background-color: yellow; border-color: red;">
+                                        <p> @error.errorMessage</p>
                                     </div>
                                 </form>
                             </div>
@@ -107,17 +108,10 @@ color    <div class="card rounded-3 text-black">
 
 <!-- Backend for the page-->
 @code {
-    private string inputEmail { get; set; }
-    private string inputUsername { get; set; }
-    private string inputPassword { get; set; }
-    char inputGender { get; set; }
-    string inputCity { get; set; }
-    string inputWeight { get; set; }
-    string inputHeight { get; set; }
-    DateTime? inputAge { get; set; }
-    int isDeleted = 0;
-    private string errorMessage;
 
+    Account account = new Account();
+    Profile profile = new Profile();
+    Error error = new Error();
 
     private void createUserMethod()
     {
@@ -128,37 +122,37 @@ color    <div class="card rounded-3 text-black">
             con.Open();
         }
 
-        string query = "Insert into Account (Username, Password, Email) Values(@Username, @Password, @Email); Insert into Profile (Area, Height, Age, Weight, Gender, Deleted) Values(@Area, @Height, @Age, @Weight, @Gender, @Deleted);";
+        string query = "Insert into Account (Username, Password, Email) Values(@Username, @Password, @Email); Insert into Profile (Area, Height, Age, Weight, Gender, Deleted, Firstname) Values(@Area, @Height, @Age, @Weight, @Gender, @Deleted, @Firstname);";
         SqlCommand sqlCmd = new SqlCommand(query, con);
 
         sqlCmd.CommandType = System.Data.CommandType.Text;
         // Account information for SQL
-        sqlCmd.Parameters.AddWithValue("@Email", inputEmail);
-        sqlCmd.Parameters.AddWithValue("@Username", inputUsername);
-        sqlCmd.Parameters.AddWithValue("@Password", inputPassword);
+        sqlCmd.Parameters.AddWithValue("@Email", account.Email);
+        sqlCmd.Parameters.AddWithValue("@Username", account.Username);
+        sqlCmd.Parameters.AddWithValue("@Password", account.Password);
 
         // Profile Information for SQL
-        sqlCmd.Parameters.AddWithValue("@Area", inputCity);
-        sqlCmd.Parameters.AddWithValue("@Weight", inputWeight);
-        sqlCmd.Parameters.AddWithValue("@Height", inputHeight);
-        sqlCmd.Parameters.AddWithValue("@Age", inputAge);
-        sqlCmd.Parameters.AddWithValue("@Gender", inputGender);
-        sqlCmd.Parameters.AddWithValue("@Deleted", isDeleted);
-
-
+        sqlCmd.Parameters.AddWithValue("@Area", profile.City);
+        sqlCmd.Parameters.AddWithValue("@Weight", profile.Weight);
+        sqlCmd.Parameters.AddWithValue("@Height", profile.Height);
+        sqlCmd.Parameters.AddWithValue("@Age", profile.Age);
+        sqlCmd.Parameters.AddWithValue("@Gender", profile.Gender);
+        sqlCmd.Parameters.AddWithValue("@Deleted", profile.isDeleted);
+        sqlCmd.Parameters.AddWithValue("@Firstname", profile.Firstname);
 
         try
         {
             sqlCmd.ExecuteScalar();
+            navigateManager.NavigateTo("");        
         }
         catch
         {
 
-            errorMessage = "Email and/or username already exists!";
+            error.errorMessage = "Email and/or username already exists!";
         }
 
     }
-    
+
 }
 
 <!-- Code for styling-->
@@ -175,22 +169,24 @@ color    <div class="card rounded-3 text-black">
 
     #media (min-width: 768px) {
         .gradient-form
+    }
+
 
     {
         height: 100vh !important;
     }
 
-    }
 
     #media (min-width: 769px) {
         .gradient-custom-2
+    }
 
     {
         border-top-right-radius: .3rem;
         border-bottom-right-radius: .3rem;
     }
 
-    }
+
 
     input:invalid + span::after {
         content: "✖";
