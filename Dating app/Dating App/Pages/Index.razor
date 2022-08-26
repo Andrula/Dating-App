@@ -2,7 +2,9 @@
 @using System.Data.SqlClient
 @using System.Data
 @using System.Data.Sql
-@using Dating_App.Data
+@using System.Text.RegularExpressions;
+@using System.Linq;
+@using Dating_App.Data;
 @inject NavigationManager navigateManager
 @inject SessionState State
 @inject Account account
@@ -40,9 +42,13 @@
 
                                         <div class="text-center pt-1 mb-5 pb-1">
                                             <button @onclick=submitMethod class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">
-                                                Log
-                                                in
+                                                Login
                                             </button>
+                                            <div class="alert" style=".alert {padding: 20px; background-color: red; color: white; margin-bottom: 15px;}
+                                    .closebtn. {margin-left: 15px; color: white; font-weight: bold; float: right; font-size: 22px; line-height: 20px; cursor: pointer; transition: 0.3s;} .c:hover {color: black;}">
+                                                <span class="btn-close" onclick="this.parentElement.style.display='none';">&times;</span>
+                                                @error.errorMessage
+                                            </div>
                                             <a class="text-muted" href="#!">Forgot password?</a>
                                         </div>
 
@@ -72,24 +78,26 @@
 </section>
 
 @code {
-        /* void SomeStartupMethod()
+    /* void SomeStartupMethod()
+    {
+    if (State.isLoggedIn)
         {
-        if (State.isLoggedIn)
-            {
-            navigateManager.NavigateTo("/Homepage");
+        navigateManager.NavigateTo("/Homepage");
     }
     }
 
     protected override async Task OnInitializedAsync()
-        {
-        SomeStartupMethod();
+    {
+    SomeStartupMethod();
     }*/
+
+    Error error = new Error();
 
 
     public void submitMethod()
     {
 
-        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2B7RBNS\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");
+        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-UIHP6HL\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");
         if (con.State == ConnectionState.Closed)
         {
 
@@ -113,65 +121,69 @@
 
                 // State.Id = reader.(GetInt32(reader.GetOrdinal(@"AccountID")));
 
-                using ( var reader = sqlCmd.ExecuteReader() )
+                using (var reader = sqlCmd.ExecuteReader())
                 {
-                    if(reader.Read())
+                    if (reader.Read())
                     {
 
-                        State.Id = reader.GetInt32( reader.GetOrdinal( "AccountID" ) );
-                        State.Username = reader.GetString( reader.GetOrdinal( "Username" ) );
-                        State.Password = reader.GetString( reader.GetOrdinal( "Password" ) );
-                        State.Email = reader.GetString( reader.GetOrdinal( "Email" ) );
-                        State.Firstname = reader.GetString( reader.GetOrdinal( "Firstname" ) );
-                        State.City = reader.GetString( reader.GetOrdinal( "Area" ) );
-                        State.Age = reader.GetDateTime( reader.GetOrdinal( "Age" ) );
-                        State.Gender = reader.GetString( reader.GetOrdinal( "Gender" ) );
-                        State.Height = reader.GetInt32( reader.GetOrdinal( "Height" ) );
-                        State.Weight = reader.GetInt32( reader.GetOrdinal( "Weight" ) );
-                        State.isDeleted = reader.GetByte( reader.GetOrdinal( "DELETED" ) );
+                        State.Id = reader.GetInt32(reader.GetOrdinal("AccountID"));
+                        State.Username = reader.GetString(reader.GetOrdinal("Username"));
+                        State.Password = reader.GetString(reader.GetOrdinal("Password"));
+                        State.Email = reader.GetString(reader.GetOrdinal("Email"));
+                        State.Firstname = reader.GetString(reader.GetOrdinal("Firstname"));
+                        State.City = reader.GetString(reader.GetOrdinal("Area"));
+                        State.Age = reader.GetDateTime(reader.GetOrdinal("Age"));
+                        State.Gender = reader.GetString(reader.GetOrdinal("Gender"));
+                        State.Height = reader.GetInt32(reader.GetOrdinal("Height"));
+                        State.Weight = reader.GetInt32(reader.GetOrdinal("Weight"));
+                        State.isDeleted = reader.GetByte(reader.GetOrdinal("DELETED"));
 
 
                         State.isLoggedIn = true;
                         navigateManager.NavigateTo("homepage");
                     }
-             
-            }
+                    else
+                    {
+                        error.errorMessage = "Wrong email or password!";
+                    }
 
-            //int StateID = reader.GetOrdinal("AccountID");
-            //int StateEmail = reader.GetOrdinal("Email");
-            //int StateFirstname = reader.GetOrdinal("Firstname");
-            //int StateCity = reader.GetOrdinal("Area");
-            //int StateAge = reader.GetOrdinal("Age");
-            //int StateGender = reader.GetOrdinal("Gender");
-            //int StateHeight = reader.GetOrdinal("Height");
-            //int StateWeight = reader.GetOrdinal("Weight");
-            //int StateisDeleted = reader.GetOrdinal("DELETED");
+                }
 
-            //State.Id = reader.GetInt32(StateID);
-            //State.Email = reader.GetString(StateEmail);
-            //State.Firstname = reader.GetString(StateFirstname);
-            //State.City = reader.GetString(StateCity);
-            //State.Age = reader.GetDateTime(StateAge);
-            //State.Gender = reader.GetChar(StateGender);
-            //State.Height = reader.GetString(StateHeight);
-            //State.Weight = reader.GetString(StateWeight);
-            //State.isDeleted = reader.GetInt32(StateisDeleted);
+                //int StateID = reader.GetOrdinal("AccountID");
+                //int StateEmail = reader.GetOrdinal("Email");
+                //int StateFirstname = reader.GetOrdinal("Firstname");
+                //int StateCity = reader.GetOrdinal("Area");
+                //int StateAge = reader.GetOrdinal("Age");
+                //int StateGender = reader.GetOrdinal("Gender");
+                //int StateHeight = reader.GetOrdinal("Height");
+                //int StateWeight = reader.GetOrdinal("Weight");
+                //int StateisDeleted = reader.GetOrdinal("DELETED");
 
-           
-            
-            /* int login = (int)sqlCmd.ExecuteScalar();
-            if (login == 1)
-            {
-              
-                State.isLoggedIn = true;
-                navigateManager.NavigateTo("homepage");
-            }
-            else
-            {
-                navigateManager.NavigateTo("error");
-            } */
+                //State.Id = reader.GetInt32(StateID);
+                //State.Email = reader.GetString(StateEmail);
+                //State.Firstname = reader.GetString(StateFirstname);
+                //State.City = reader.GetString(StateCity);
+                //State.Age = reader.GetDateTime(StateAge);
+                //State.Gender = reader.GetChar(StateGender);
+                //State.Height = reader.GetString(StateHeight);
+                //State.Weight = reader.GetString(StateWeight);
+                //State.isDeleted = reader.GetInt32(StateisDeleted);
+
+
+
+                /* int login = (int)sqlCmd.ExecuteScalar();
+                if (login == 1)
+                {
+
+                    State.isLoggedIn = true;
+                    navigateManager.NavigateTo("homepage");
+                }
+                else
+                {
+                    navigateManager.NavigateTo("error");
+                } */
             };
-            
+
         }
     }
 }
@@ -206,5 +218,5 @@
         border-bottom-right-radius: .3rem;
     }
 
-    }
+
 </style>
