@@ -1,12 +1,14 @@
-﻿namespace Dating_App.Data
+﻿
+namespace Dating_App.Data
 {
     public class Profile : Account
     {
+
         public string Firstname { get; set; }
-        public char Gender { get; set; }
+        public string Gender { get; set; }
         public string City { get; set; }
-        public string Weight { get; set; }
-        public string Height { get; set; }
+        public int Weight { get; set; }
+        public int Height { get; set; }
         public DateTime? Age { get; set; }
 
         public int isDeleted = 0;
