@@ -10,7 +10,6 @@
 @inject NavigationManager navigateManager
 @layout LoginLayout
 
-
 <section class="h-100 gradient-form" style="background-color: #eee;">
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
@@ -80,21 +79,24 @@
                                             <input type="radio"
                                                    value="M"
                                                    name="gender"
-                                                   checked="@(profile.Gender == 'M')"
-                                                   @onclick="@(()=>profile.Gender = 'M')" />Male
+                                                   checked="@(profile.Gender == "M")"
+                                                   @onclick="@(()=>profile.Gender = "M")" />Male
                                         </label>
                                         <label>
                                             <input type="radio"
                                                    value="F"
                                                    name="gender"
-                                                   checked="@(profile.Gender == 'F')"
-                                                   @onclick="@(()=>profile.Gender = 'F')" />Female
+                                                   checked="@(profile.Gender == "F")"
+                                                   @onclick="@(()=>profile.Gender = "F")" />Female
                                         </label>
                                     </div>
 
-                                    <button @onclick=createUserMethod class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">Next</button>
-                                    <div style="background-color: yellow; border-color: red;">
-                                        <p> @error.errorMessage</p>
+                                    <button @onclick=createUserMethod class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">Create account</button>
+
+                                     <div class="alert" style=".alert {padding: 20px; background-color: red; color: white; margin-bottom: 15px;} 
+                                    .closebtn. {margin-l: 15px; color: white; font-weight: bold; float: right; font-size: 22px; line-height: 20px; cursor: pointer; transition: 0.3s;} .c:hover {color: black;}">
+                                     <span class="btn-close" onclick="this.parentElement.style.display='none';">&times;</span>
+                                        @error.errorMessage
                                     </div>
                                 </form>
                             </div>
@@ -147,7 +149,6 @@
         }
         catch
         {
-
             error.errorMessage = "Email and/or username already exists!";
         }
 
