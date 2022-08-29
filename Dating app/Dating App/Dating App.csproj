@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Remove="Data\NewFile.txt" />
+    <None Remove="Pages\NewFile.txt" />
     <None Remove="Shared\NewFile.txt" />
   </ItemGroup>
 
@@ -16,6 +17,10 @@
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="userImages\" />
   </ItemGroup>
 
 </Project>

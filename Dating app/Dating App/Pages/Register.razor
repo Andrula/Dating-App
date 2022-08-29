@@ -5,7 +5,6 @@
 @using System.Text.RegularExpressions;
 @using System.Linq;
 @using Dating_App.Data;
-@inject IJSRuntime JsRuntime
 @inject NavigationManager navigateManager
 @layout LoginLayout
 
@@ -93,7 +92,7 @@
                                     <button @onclick=createUserMethod class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">Create account</button>
 
                                      <div class="alert" style=".alert {padding: 20px; background-color: red; color: white; margin-bottom: 15px;} 
-                                    .closebtn. {margin-l: 15px; color: white; font-weight: bold; float: right; font-size: 22px; line-height: 20px; cursor: pointer; transition: 0.3s;} .c:hover {color: black;}">
+                                    .closebtn. {margin-left: 15px; color: white; font-weight: bold; float: right; font-size: 22px; line-height: 20px; cursor: pointer; transition: 0.3s;} .c:hover {color: black;}">
                                      <span class="btn-close" onclick="this.parentElement.style.display='none';">&times;</span>
                                         @error.errorMessage
                                     </div>
@@ -116,7 +115,7 @@
 
     private void createUserMethod()
     {
-        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-UIHP6HL\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");
+        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2B7RBNS\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");
         if (con.State == ConnectionState.Closed)
         {
             // Opens the SQL connection
@@ -143,8 +142,18 @@
 
         try
         {
+            // Executes the sqlCmd and creates user
             sqlCmd.ExecuteScalar();
-            navigateManager.NavigateTo("");        
+
+             // If directory does not exist, create it for the user.
+            string subdir = @"C:\Users\xAndr\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + account.Username;
+            if (!Directory.Exists(subdir))
+            {
+                Directory.CreateDirectory(subdir);
+            }
+
+            // Navigates back to index page.
+            navigateManager.NavigateTo("");
         }
         catch
         {

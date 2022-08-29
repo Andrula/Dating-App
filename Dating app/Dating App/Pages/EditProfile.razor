@@ -1,0 +1,252 @@
+﻿@page "/EditProfile"
+@using System.Data.SqlClient
+@using System.Data
+@using System.Data.Sql
+@using System.Text.RegularExpressions;
+@using System.Linq;
+@using Dating_App.Data;
+@inject NavigationManager navigateManager
+@inject SessionState State
+@inject HttpClient Http
+
+
+<div class="card">
+    <img class="imageCard" src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="John" ;">
+    <InputFile class="custom-file-input" multiple OnChange="OnChange" accept="image/png, image/jpeg, image/gif" id="inputFile" />
+    <input @bind-value="inputFirstname" placeholder="Edit your first name..." />
+    <input @bind-value="inputDescription" placeholder="Edit your description..." />
+    <input @bind-value="inputCity" placeholder="Edit your city..." />
+    <input @bind-value="inputWeight" type="number" placeholder="Edit your weight in kg..." />
+    <input @bind-value="inputHeight" type="number" placeholder="Edit your height in cm..." />
+    <button type="submit" @onclick=alterTable style="margin-top: 5px;">Confirm changes</button>
+</div>
+
+
+
+@code {
+
+    void SomeStartupMethod()
+    {
+        if (!State.isLoggedIn)
+        {
+            navigateManager.NavigateTo("/");
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        SomeStartupMethod();
+    }
+
+    private string inputFirstname;
+    private string inputDescription;
+    private string inputCity;
+    private string inputWeight;
+    private string inputHeight;
+
+    List<ImageFile> filesBase64 = new List<ImageFile>();
+	bool isDisabled = false;
+
+
+   async Task OnChange(InputFileChangeEventArgs e)
+	{
+		var files = e.GetMultipleFiles(); // get the files selected by the users
+		foreach(var file in files)
+		{
+			var resizedFile = await file.RequestImageFileAsync(file.ContentType, 640, 480); // resize the image file
+			var buf = new byte[resizedFile.Size]; // allocate a buffer to fill with the file's data
+			using (var stream = resizedFile.OpenReadStream())
+			{
+				await stream.ReadAsync(buf); // copy the stream to the buffer
+			}
+			filesBase64.Add(new ImageFile { base64data = Convert.ToBase64String(buf), contentType = file.ContentType, fileName = file.Name }); // convert to a base64 string!!
+		}
+		
+	}
+
+	async Task Upload()
+	{
+		isDisabled = true;
+		using (var msg = await Http.PostAsJsonAsync<List<ImageFile>>("/api/upload", filesBase64, System.Threading.CancellationToken.None))
+		{
+			isDisabled = false;
+			if (msg.IsSuccessStatusCode)
+			{
+				filesBase64.Clear();
+			}
+		}
+	}
+
+
+    public void alterTable()
+    {
+        Error error = new Error();
+
+        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2B7RBNS\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");
+        if (con.State == ConnectionState.Closed)
+        {
+
+            // Opens the SQL connection
+            con.Open();
+
+            if (inputFirstname != null)
+            {
+                string query = "UPDATE Profile SET Firstname = @Firstname WHERE AccountID = @AccountID;";
+                SqlCommand sqlCmd = new SqlCommand(query, con);
+                sqlCmd.CommandType = System.Data.CommandType.Text;
+                sqlCmd.Parameters.AddWithValue("@Firstname", inputFirstname);
+                sqlCmd.Parameters.AddWithValue("@AccountID", State.Id);
+
+                try
+                {
+                    sqlCmd.ExecuteScalar();
+                    State.Firstname = inputFirstname;
+                    navigateManager.NavigateTo("MyProfile");
+                }
+                catch
+                {
+                    error.errorMessage = "Email and/or username already exists!";
+                }
+            }
+
+            if (inputDescription != null)
+            {
+                string query = "UPDATE Profile SET Description = @Description WHERE AccountID = @AccountID;";
+                SqlCommand sqlCmd = new SqlCommand(query, con);
+                sqlCmd.CommandType = System.Data.CommandType.Text;
+                sqlCmd.Parameters.AddWithValue("@Description", inputDescription);
+                sqlCmd.Parameters.AddWithValue("@AccountID", State.Id);
+
+                try
+                {
+                    State.Description = inputDescription;
+                    sqlCmd.ExecuteScalar();
+                    navigateManager.NavigateTo("MyProfile");
+                }
+                catch
+                {
+                    error.errorMessage = "Email and/or username already exists!";
+                }
+            }
+
+            if (inputCity != null)
+            {
+                string query = "UPDATE Profile SET Area = @City WHERE AccountID = @AccountID;";
+                SqlCommand sqlCmd = new SqlCommand(query, con);
+                sqlCmd.CommandType = System.Data.CommandType.Text;
+                sqlCmd.Parameters.AddWithValue("@City", inputCity);
+                sqlCmd.Parameters.AddWithValue("@AccountID", State.Id);
+
+                try
+                {
+                    sqlCmd.ExecuteScalar();
+                    State.City = inputCity;
+                    navigateManager.NavigateTo("MyProfile");
+                }
+                catch
+                {
+                    error.errorMessage = "Email and/or username already exists!";
+                }
+            }
+
+
+            if (inputHeight != null)
+            {
+                string query = "UPDATE Profile SET Height = @Height WHERE AccountID = @AccountID;";
+                SqlCommand sqlCmd = new SqlCommand(query, con);
+                sqlCmd.CommandType = System.Data.CommandType.Text;
+                sqlCmd.Parameters.AddWithValue("@Height", inputHeight);
+                sqlCmd.Parameters.AddWithValue("@AccountID", State.Id);
+
+                try
+                {
+                    State.Height = Convert.ToInt32(inputHeight);
+                    sqlCmd.ExecuteScalar();
+                    navigateManager.NavigateTo("MyProfile");
+                }
+                catch
+                {
+                    error.errorMessage = "Email and/or username already exists!";
+                }
+            }
+
+            if (inputWeight != null)
+            {
+                string query = "UPDATE Profile SET Weight = @Weight WHERE AccountID = @AccountID;";
+                SqlCommand sqlCmd = new SqlCommand(query, con);
+                sqlCmd.CommandType = System.Data.CommandType.Text;
+                sqlCmd.Parameters.AddWithValue("@Weight", inputWeight);
+                sqlCmd.Parameters.AddWithValue("@AccountID", State.Id);
+
+                try
+                {
+                    State.Weight = Convert.ToInt32(inputWeight);
+                    sqlCmd.ExecuteScalar();
+                    navigateManager.NavigateTo("MyProfile");
+                }
+                catch
+                {
+                    error.errorMessage = "Email and/or username already exists!";
+                }
+            }
+        }
+    }
+}
+<style>
+    .gradient-custom-2 {
+        /* fallback for old browsers */
+        background: #fccb90;
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+    }
+
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        max-width: 300px;
+        margin: auto;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+
+    .description {
+        color: grey;
+        font-size: 18px;
+    }
+
+    input {
+        padding-top: 5px;
+        margin-top: 5px;
+        margin-left: 10px;
+        margin-right: 10px;
+        border: none;
+        border-bottom: 1px solid #D3D3D3;
+    }
+
+    .input .item:hover {
+        background: #e1e1e1;
+        border: 1px solid #D3D3D3;
+    }
+
+    button {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+        /* fallback for old browsers */
+        background: #fccb90;
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+    }
+
+        button:hover, a:hover {
+            opacity: 0.7;
+        }
+</style>

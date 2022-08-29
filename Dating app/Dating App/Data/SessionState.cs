@@ -8,6 +8,7 @@
         public string Password { get; set; }
 
         public string Firstname { get; set; }
+        public string Description { get; set; }
         public string Gender { get; set; }
         public string City { get; set; }
         public int Weight { get; set; }

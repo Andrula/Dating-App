@@ -79,8 +79,8 @@
 
 @code {
     /* void SomeStartupMethod()
-    {
-    if (State.isLoggedIn)
+        {
+        if (State.isLoggedIn)
         {
         navigateManager.NavigateTo("/Homepage");
     }
@@ -97,7 +97,7 @@
     public void submitMethod()
     {
 
-        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-UIHP6HL\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");
+        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2B7RBNS\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");
         if (con.State == ConnectionState.Closed)
         {
 
@@ -105,7 +105,7 @@
             con.Open();
 
             //string query = "SELECT COUNT(*) FROM account WHERE username=@Username AND password=@Password";
-            string query = "SELECT Account.AccountID, Account.Email, Account.Username, Account.Password, Profile.AccountID, Profile.Firstname, Profile.Area, Profile.Age, Profile.Gender, Profile.Height, Profile.Weight, Profile.DELETED FROM Account INNER JOIN Profile ON Profile.AccountID=Account.AccountID WHERE Username=@Username AND password=@Password;";
+            string query = "SELECT Account.AccountID, Account.Email, Account.Username, Account.Password, Profile.AccountID, Profile.Firstname, Profile.Description, Profile.Area, Profile.Age, Profile.Gender, Profile.Height, Profile.Weight, Profile.DELETED FROM Account INNER JOIN Profile ON Profile.AccountID=Account.AccountID WHERE Username=@Username AND password=@Password;";
 
             using (SqlCommand sqlCmd = new SqlCommand(query, con))
             {
@@ -131,6 +131,7 @@
                         State.Password = reader.GetString(reader.GetOrdinal("Password"));
                         State.Email = reader.GetString(reader.GetOrdinal("Email"));
                         State.Firstname = reader.GetString(reader.GetOrdinal("Firstname"));
+                        State.Description = reader.GetString(reader.GetOrdinal("Description"));
                         State.City = reader.GetString(reader.GetOrdinal("Area"));
                         State.Age = reader.GetDateTime(reader.GetOrdinal("Age"));
                         State.Gender = reader.GetString(reader.GetOrdinal("Gender"));
