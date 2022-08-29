@@ -15,6 +15,8 @@
         public int Height { get; set; }
         public bool isLoggedIn { get; set; }
 
+        public string imgPath { get; set; }
+
         public DateTime? Age { get; set; }
 
         public int isDeleted { get; set; }
