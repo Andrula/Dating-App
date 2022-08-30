@@ -145,11 +145,12 @@
             // Executes the sqlCmd and creates user
             sqlCmd.ExecuteScalar();
 
-             // If directory does not exist, create it for the user.
+            // If directory does not exist, create it for the user.
             string subdir = @"C:\Users\xAndr\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + account.Username;
             if (!Directory.Exists(subdir))
             {
                 Directory.CreateDirectory(subdir);
+                File.Copy(@"C:\Users\xAndr\Source\Repos\Dating-App\Dating app\Dating App\userImages\Default.png", @"C:\Users\xAndr\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + account.Username + @"\" + account.Username + ".jpg");
             }
 
             // Navigates back to index page.

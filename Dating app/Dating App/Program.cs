@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Dating_App.Data;
+using Dating_App.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<SessionState>();
 builder.Services.AddSingleton<Account>();
+builder.Services.AddScoped<IFileUpload, FileUpload>();
+builder.Services.AddHttpClient();
 
 
 var app = builder.Build();

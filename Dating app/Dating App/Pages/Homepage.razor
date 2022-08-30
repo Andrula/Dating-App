@@ -13,17 +13,4 @@
 
 @code {
 
-
-    void SomeStartupMethod()
-    {
-        if (!State.isLoggedIn)
-        {
-            navigateManager.NavigateTo("/");
-        }    
-    }
-
-protected override async Task OnInitializedAsync()
-{
-    SomeStartupMethod();
-}
 }
