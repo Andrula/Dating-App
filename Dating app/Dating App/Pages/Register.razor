@@ -115,7 +115,7 @@
 
     private void createUserMethod()
     {
-        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-S1SH9PF;Initial Catalog=DatingDB;Integrated Security=True");
+        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2B7RBNS\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");
         if (con.State == ConnectionState.Closed)
         {
             // Opens the SQL connection
@@ -145,11 +145,12 @@
             // Executes the sqlCmd and creates user
             sqlCmd.ExecuteScalar();
 
-             // If directory does not exist, create it for the user.
-            string subdir = @"C:\Users\nickl\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + account.Username;
+            // If directory does not exist, create it for the user.
+            string subdir = @"C:\Users\xAndr\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + account.Username;
             if (!Directory.Exists(subdir))
             {
                 Directory.CreateDirectory(subdir);
+                File.Copy(@"C:\Users\xAndr\Source\Repos\Dating-App\Dating app\Dating App\userImages\Default.png", @"C:\Users\xAndr\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + account.Username + @"\" + account.Username + ".jpg");
             }
 
             // Navigates back to index page.

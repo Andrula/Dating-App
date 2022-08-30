@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @using Dating_App.Data;
 @inject SessionState State
+@inject NavigationManager navigateManager
 
 <PageTitle>Fishers Single</PageTitle>
 
@@ -10,8 +11,17 @@
     </div>
 
     <main>
-        <div class="top-row px-4">
-            Welcome @State.Username
+         
+        <div class="top-row px-4" style="margin-right: 5px;">
+            <div style=" margin-right: auto">
+                 <img src="https://www.clipartmax.com/png/full/71-718854_kissing-clipart-fish-cartoon-fish-in-love.png" style="height: 50px;" alt="logo">
+            </div>
+
+            <a href="https://localhost:7069/MyProfile"><img src='http:\\127.0.0.1:8887\userImages\@(State.Username)\@(State.Username).jpg' class="rounded-circle" style="width: 45px; margin-right: 10px;"/></a>
+          
+            <div style="margin-right: 20px;">Welcome @State.Username</div>
+            
+            <button @onclick=logoutMethod>Logout</button>
         </div>
 
         <article class="content px-4">
@@ -22,5 +32,36 @@
 
 
 @code {
+    async Task logoutMethod()
+    {
+        State.isLoggedIn = false;
+        navigateManager.NavigateTo("/", forceLoad: true);
+    }
 
+    //Method for checking if state equals true and if fasle, user is redirected to index page.
+    void SomeStartupMethod()
+    {
+        if (!State.isLoggedIn)
+        {     
+            navigateManager.NavigateTo("/");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        SomeStartupMethod();
+    }
 }
+
+<style>
+button {
+        /* fallback for old browsers */
+        background: #fccb90;
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+}
+
+</style>
+

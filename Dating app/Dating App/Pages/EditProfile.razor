@@ -14,40 +14,33 @@
 
 
 <div class="card">
-    <img class="imageCard" src='C:\Users\nickl\Source\Repos\Dating-App\Dating app\Dating App\userImages\@(State.Username)\@(State.Username).jpg'>
-    <BlazorInputFile.InputFile OnChange="HandleFileSelected" accept="image/png, image/jpeg, image/gif"/>
-    <button @onclick=imageHandler>Upload</button>    
+    <img class="imageCard" src='http:\\127.0.0.1:8887\userImages\@(State.Username)\@(State.Username).jpg' onerror="http:\\127.0.0.1:8887\userImages\Default.png">
+    <div style="display: inline-flex">
+        <BlazorInputFile.InputFile OnChange="HandleFileSelected" accept="image/png, image/jpeg, image/gif" />
+        <button style="padding: 5px; width: 50%; height: 35px; font-size: 14px; margin-right: 5px; margin-top: 7px;" @onclick=updatePage>Upload</button>
+    </div>
+    @* <button @onclick=uploadMethod>Upload</button>*@
     <input @bind-value="inputFirstname" placeholder="Edit your first name..." />
     <input @bind-value="inputDescription" placeholder="Edit your description..." />
     <input @bind-value="inputCity" placeholder="Edit your city..." />
     <input @bind-value="inputWeight" type="number" placeholder="Edit your weight in kg..." />
     <input @bind-value="inputHeight" type="number" placeholder="Edit your height in cm..." />
-    <button type="submit" @onclick=alterTable style="margin-top: 5px;">Confirm changes</button>
+    <button class="buttonpage" type="submit" @onclick=alterTable style="margin-top: 5px;">Confirm changes</button>
 </div>
 
-@if (file != null) {
+@if (file != null)
+{
 
-    <span>File Name: @file.Name</span> <br />
-    <span>File Name: @file.Size</span> <br />
-    <span>File Name: @file.Type</span> <br />
+    <span>File Name: @file.Name</span>
+    <br />
+    <span>File Name: @file.Size</span>
+    <br />
+    <span>File Name: @file.Type</span>
+    <br />
 }
 
 
-
-
 @code {
-
-    void SomeStartupMethod()
-    {
-        if (!State.isLoggedIn)
-        {
-            navigateManager.NavigateTo("/");
-        }
-    }
-    protected override async Task OnInitializedAsync()
-    {
-        SomeStartupMethod();
-    }
 
     private string inputFirstname;
     private string inputDescription;
@@ -55,24 +48,38 @@
     private string inputWeight;
     private string inputHeight;
 
+
+
     IFileListEntry file;
-    async Task HandleFileSelected(IFileListEntry[] files) {
+    async Task HandleFileSelected(IFileListEntry[] files)
+    {
         file = files.FirstOrDefault();
-        if (file != null) {
+        if (File.Exists(@"C:\Users\xAndr\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + State.Username + @"\" + State.Username + ".jpg"))
+        {
+            File.Delete(@"C:\Users\xAndr\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + State.Username + @"\" + State.Username + ".jpg");
+        }
+        if (file != null)
+        {
             await fileUpload.Upload(file, State);
+            File.Move(@"C:\Users\xAndr\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + State.Username + @"\" + file.Name,
+            @"C:\Users\xAndr\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + State.Username + @"\" + State.Username + ".jpg");
+
         }
     }
 
-    void imageHandler() {
-        File.Move(@"C:\Users\nickl\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + State.Username + @"\" + file.Name,
-        @"C:\Users\nickl\Source\Repos\Dating-App\Dating app\Dating App\userImages\" + State.Username + @"\" + State.Username + ".jpg");
+
+
+
+    public void updatePage()
+    {
+        navigateManager.NavigateTo(navigateManager.Uri, forceLoad: true);
     }
 
     public void alterTable()
     {
         Error error = new Error();
 
-        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-S1SH9PF;Initial Catalog=DatingDB;Integrated Security=True");
+        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2B7RBNS\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");
         if (con.State == ConnectionState.Closed)
         {
 
@@ -178,10 +185,15 @@
                 {
                     error.errorMessage = "Email and/or username already exists!";
                 }
+
             }
+            navigateManager.NavigateTo("MyProfile");
         }
     }
 }
+
+
+@*Styling for the page*@
 <style>
     .gradient-custom-2 {
         /* fallback for old browsers */
@@ -220,7 +232,7 @@
         border: 1px solid #D3D3D3;
     }
 
-    button {
+    .buttonpage {
         border: none;
         outline: 0;
         display: inline-block;

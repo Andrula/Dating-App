@@ -78,26 +78,31 @@
 </section>
 
 @code {
-    /* void SomeStartupMethod()
-        {
+    // The code to the page starts here
+    void SomeStartupMethod()
+    {
         if (State.isLoggedIn)
         {
-        navigateManager.NavigateTo("/Homepage");
-    }
+            navigateManager.NavigateTo("/Homepage");
+        }
+        else
+        {
+            account.Username = "";
+            account.Password = "";
+        }
     }
 
     protected override async Task OnInitializedAsync()
     {
-    SomeStartupMethod();
-    }*/
+        SomeStartupMethod();
+    }
 
     Error error = new Error();
-
 
     public void submitMethod()
     {
 
-        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-S1SH9PF;Initial Catalog=DatingDB;Integrated Security=True");
+        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2B7RBNS\SQLEXPRESS;Initial Catalog=DatingDB;Integrated Security=True");
         if (con.State == ConnectionState.Closed)
         {
 
@@ -109,17 +114,9 @@
 
             using (SqlCommand sqlCmd = new SqlCommand(query, con))
             {
-
-
-
                 sqlCmd.CommandType = System.Data.CommandType.Text;
                 sqlCmd.Parameters.AddWithValue("@Username", account.Username);
                 sqlCmd.Parameters.AddWithValue("@Password", account.Password);
-                //int count = Convert.ToInt32(sqlCmd.ExecuteScalar());
-
-
-
-                // State.Id = reader.(GetInt32(reader.GetOrdinal(@"AccountID")));
 
                 using (var reader = sqlCmd.ExecuteReader())
                 {
@@ -147,44 +144,8 @@
                     {
                         error.errorMessage = "Wrong email or password!";
                     }
-
                 }
-
-                //int StateID = reader.GetOrdinal("AccountID");
-                //int StateEmail = reader.GetOrdinal("Email");
-                //int StateFirstname = reader.GetOrdinal("Firstname");
-                //int StateCity = reader.GetOrdinal("Area");
-                //int StateAge = reader.GetOrdinal("Age");
-                //int StateGender = reader.GetOrdinal("Gender");
-                //int StateHeight = reader.GetOrdinal("Height");
-                //int StateWeight = reader.GetOrdinal("Weight");
-                //int StateisDeleted = reader.GetOrdinal("DELETED");
-
-                //State.Id = reader.GetInt32(StateID);
-                //State.Email = reader.GetString(StateEmail);
-                //State.Firstname = reader.GetString(StateFirstname);
-                //State.City = reader.GetString(StateCity);
-                //State.Age = reader.GetDateTime(StateAge);
-                //State.Gender = reader.GetChar(StateGender);
-                //State.Height = reader.GetString(StateHeight);
-                //State.Weight = reader.GetString(StateWeight);
-                //State.isDeleted = reader.GetInt32(StateisDeleted);
-
-
-
-                /* int login = (int)sqlCmd.ExecuteScalar();
-                if (login == 1)
-                {
-
-                    State.isLoggedIn = true;
-                    navigateManager.NavigateTo("homepage");
-                }
-                else
-                {
-                    navigateManager.NavigateTo("error");
-                } */
             };
-
         }
     }
 }
@@ -218,6 +179,5 @@
         border-top-right-radius: .3rem;
         border-bottom-right-radius: .3rem;
     }
-
 
 </style>
