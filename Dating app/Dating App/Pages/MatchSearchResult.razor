@@ -1,0 +1,33 @@
+﻿@page "/MatchSearchResult"
+@using System.Data.SqlClient
+@using System.Data
+@using System.Data.Sql
+@using System.Text.RegularExpressions;
+@using System.Linq;
+@using Dating_App.Data;
+@inject NavigationManager navigateManager
+@inject SessionState State
+@inherits ProfileListBase
+
+<body>
+    <div class="container">
+        <div class="card-deck">
+            @foreach (var ProfileInfo in loadedProfiles)
+            {
+                <div class="card">
+                    @*<img class="imageCard" src='http:\\127.0.0.1:8887\userImages\@(State.Username)\@(State.Username).jpg'>*@
+                    <h1>@ProfileInfo.Firstname</h1>
+                    <p class="description"> @ProfileInfo.Description</p>
+                    <p>I live in @ProfileInfo.City</p>
+                    <p>I am @ProfileInfo.Age years old!</p>
+                    <p>@ProfileInfo.Height cm</p>
+                    <p>@ProfileInfo.Weight kilos</p>
+                </div>
+            }
+        </div>
+    </div>
+</body>
+
+@code {
+
+}
