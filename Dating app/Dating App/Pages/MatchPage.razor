@@ -1,0 +1,31 @@
+﻿@page "/MatchPage"
+@using System.Data.SqlClient
+@using System.Data
+@using System.Data.Sql
+@using System.Text.RegularExpressions;
+@using System.Linq;
+@using Dating_App.Data;
+@inject NavigationManager navigateManager
+@inject SessionState State
+@inherits ProfileListBase
+
+<body>
+    <div class="container">
+        <div>
+            <button @onclick=klikmig></button>
+
+        </div>
+    </div>
+</body>
+
+
+
+@code {
+
+
+    ProfileListBase profilelist = new ProfileListBase();
+    public void klikmig()
+    {
+        navigateManager.NavigateTo("MatchSearchResult");
+    }
+ }

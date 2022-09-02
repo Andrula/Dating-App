@@ -32,12 +32,12 @@
 
                                         <div class="form-outline mb-4">
 
-                                            <input @bind-value="account.Username" type="text" id="form2Example11" class="form-control"
+                                            <input @bind-value="account.Username" type="text" @onkeydown="@Enter" id="form2Example11" class="form-control"
                                                    placeholder="Username" />
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <input @bind-value="account.Password" type="password" id="form2Example22" class="form-control" placeholder="Password" />
+                                            <input @bind-value="account.Password" type="password" @onkeydown="@Enter" id="form2Example22" class="form-control" placeholder="Password" />
                                         </div>
 
                                         <div class="text-center pt-1 mb-5 pb-1">
@@ -46,7 +46,6 @@
                                             </button>
                                             <div class="alert" style=".alert {padding: 20px; background-color: red; color: white; margin-bottom: 15px;}
                                     .closebtn. {margin-left: 15px; color: white; font-weight: bold; float: right; font-size: 22px; line-height: 20px; cursor: pointer; transition: 0.3s;} .c:hover {color: black;}">
-                                                <span class="btn-close" onclick="this.parentElement.style.display='none';">&times;</span>
                                                 @error.errorMessage
                                             </div>
                                             <a class="text-muted" href="#!">Forgot password?</a>
@@ -148,6 +147,18 @@
             };
         }
     }
+
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            submitMethod();
+        }
+}
+
+}
+
+
 }
 
 <style>
